@@ -35,11 +35,13 @@ app.use(bodyParser.json())
 app.use(morgan(':method :url :status :response-time ms - :res[content-length]'))
 
 // Route files
-const auth_routes = require('./routes/auth.routes')
+const user_routes = require('./routes/user.routes')
+const friend_routes = require('./routes/friend.routes')
 
 // Routes
 app.get('/', (req, res) => res.send('Hello World!'))
-app.use('/auth', auth_routes)
+app.use('/users', user_routes)
+app.use('/friends', friend_routes)
 
 // Catch 404's
 app.use('*', function (req, res) {
