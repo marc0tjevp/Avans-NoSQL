@@ -1,0 +1,18 @@
+{
+    "swaggerDefinition": {
+        "info": {
+            "description": "",
+            "title": "Studdit API",
+            "version": "1.0.0"
+        },
+        "host": "localhost:8080",
+        "basePath": "/",
+        "produces": [
+            "application/json"
+        ],
+        "schemes": ["http", "https"],
+        "securityDefinitions": {}
+    },
+    "basedir": "",
+    "files": ["./routes/*.routes.js"]
+}

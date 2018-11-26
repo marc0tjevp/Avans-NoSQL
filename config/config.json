@@ -1,0 +1,15 @@
+{
+    "port": 8080,
+    "databases": {
+        "mongo": "mongodb://localhost/studdit",
+        "neo4j": ""
+    },
+    "developers": [
+        {
+            "name": "Marco van Poortvliet"
+        },
+        {
+            "name": "Fer Schmidt"
+        }
+    ]
+}
