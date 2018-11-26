@@ -1,17 +1,38 @@
-// Require
 const express = require('express')
 const bodyParser = require('body-parser')
-const NotFoundResponse = require('./model/notfound.response')
+const boxen = require('boxen');
+var morgan = require('morgan')
 const app = express()
-const port = 3000
+
+// Config
+const swaggerOptions = require('./config/swagger.config.json')
+const config = require('./config/config.json')
+
+// Responses
+const NotFoundResponse = require('./model/response/notfound.response')
+const ApiResponse = require('./model/response/api.response')
+
+// Startup log
+console.log(boxen('Studdit API', {padding: { left: 20, right: 20, top: 1, bottom: 1 }, margin: 1, borderStyle: 'double'}));
+
+// Mongoose
+var mongoose = require('mongoose')
+mongoose.connect(config.databases.mongo, { useNewUrlParser: true })
+var db = mongoose.connection
+
+db.on('error', console.error.bind(console, 'Could not connect to ' + config.databases.mongo + ": "))
+
+db.once('open', function() {
+  console.log('Mongoose: Connected to Mongo Database: ' + config.databases.mongo)
+})
 
 // Swagger
 const expressSwagger = require('express-swagger-generator')(app);
-const swaggerOptions = require('./config/swagger.config.json')
 expressSwagger(swaggerOptions)
 
 // Use
 app.use(bodyParser.json())
+app.use(morgan(':method :url :status :response-time ms - :res[content-length]'))
 
 // Route files
 const auth_routes = require('./routes/auth.routes')
@@ -26,9 +47,9 @@ app.use('*', function (req, res) {
 })
 
 // Listen on port
-var server = app.listen(process.env.PORT || 8080, function () {
+var server = app.listen(process.env.PORT || config.port, function () {
     var host = server.address().address
     var port = server.address().port
 
-    console.log("Listening on port " + port)
+    console.log("Express: Listening to Socket: http://localhost/" + port)
 })

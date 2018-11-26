@@ -1,8 +1,8 @@
 {
     "swaggerDefinition": {
         "info": {
-            "description": "This is a sample server",
-            "title": "Swagger",
+            "description": "",
+            "title": "Studdit API",
             "version": "1.0.0"
         },
         "host": "localhost:8080",
@@ -11,8 +11,7 @@
             "application/json"
         ],
         "schemes": ["http", "https"],
-        "securityDefinitions": {
-        }
+        "securityDefinitions": {}
     },
     "basedir": "",
     "files": ["./routes/*.routes.js"]

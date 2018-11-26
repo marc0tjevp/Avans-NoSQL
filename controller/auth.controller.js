@@ -1,4 +1,4 @@
-const ApiResponse = require('../model/api.response')
+const ApiResponse = require('../model/response/api.response')
 
 function login(req, res) {
 
