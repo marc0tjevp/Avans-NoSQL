@@ -15,5 +15,12 @@
   "bugs": {
     "url": "https://github.com/marc0tjevp/Avans-NoSQL/issues"
   },
-  "homepage": "https://github.com/marc0tjevp/Avans-NoSQL#readme"
+  "homepage": "https://github.com/marc0tjevp/Avans-NoSQL#readme",
+  "dependencies": {
+    "body-parser": "^1.18.3",
+    "express": "^4.16.4"
+  },
+  "devDependencies": {
+    "express-swagger-generator": "^1.1.10"
+  }
 }
