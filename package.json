@@ -1,0 +1,19 @@
+{
+  "name": "avans-nosql",
+  "version": "0.0.1",
+  "description": "Studdit - Ask questions, start threads and comment on interesting stuff.",
+  "main": "server.js",
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/marc0tjevp/Avans-NoSQL.git"
+  },
+  "author": "Marco van Poortvliet, Fer Schmidt",
+  "license": "GPL-2.0-only",
+  "bugs": {
+    "url": "https://github.com/marc0tjevp/Avans-NoSQL/issues"
+  },
+  "homepage": "https://github.com/marc0tjevp/Avans-NoSQL#readme"
+}
