@@ -38,14 +38,14 @@ app.use(morgan(':method :url :status :response-time ms - :res[content-length]'))
 const user_routes = require('./routes/user.routes')
 const friend_routes = require('./routes/friend.routes')
 const thread_routes = require('./routes/thread.routes')
-const comment_route = require('./comment.routes')
+const comment_route = require('./routes/comment.routes')
 
 // Routes
 app.get('/', (req, res) => res.send('Hello World!'))
 app.use('/users', user_routes)
 app.use('/friends', friend_routes)
 app.use('/threads', thread_routes)
-app.use('/comments')
+app.use('/comments/:id',comment_route)
 
 // Catch 404's
 app.use('*', function (req, res) {

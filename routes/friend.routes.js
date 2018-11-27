@@ -13,7 +13,7 @@ routes.get('/threads/:depth', friend.getThreadByDepth)
  * Gets friends with a certain depth
  * @route GET /friends/:depth
  * @group Friendship
- * @param {int} depth.required - Username of the user
+ * @param {int} depth.required - Depth of friends
  */
 routes.get('/:depth', friend.getByDepth)
 
@@ -21,6 +21,7 @@ routes.get('/:depth', friend.getByDepth)
  * Adds a relation between two users
  * @route POST /friends
  * @group Friendship
+ * @param {string} username.required - Username of friend
  */
 routes.post('*', friend.addFriend)
 
@@ -28,6 +29,7 @@ routes.post('*', friend.addFriend)
  * Remove a relation between two users
  * @route DELETE /friends
  * @group Friendship
+ * @param {string} username.required - Friend
  */
 routes.delete('*', friend.deleteByUsername)
 

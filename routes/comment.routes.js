@@ -5,37 +5,50 @@ let comment = require('../controller/comment.controller')
  * Gets up/downvotes from a certain comment
  * @route GET /comments/:id/karma
  * @group Comment
+ * @param {int} id.required - id of comment
  */
-routes.get('/:id/karma', comment.getKarma)
+routes.get('/karma', comment.getKarma)
 
 /**
  * Votes the comment up
  * @route POST /comments/:id/karma/up
  * @group Karma
+ * @param {int} id.required - id of comment
  */
-routes.post('/:id/karma/up', comment.voteUp)
+routes.post('/karma/up', comment.voteUp)
 
 /**
  * Votes the comment down
  * @route POST /comments/:id/karma/down
  * @group Karma
+ * @param {int} id.required - id of comment
  */
-routes.post('/:id/karma/down', comment.voteDown)
+routes.post('/karma/down', comment.voteDown)
 
 /**
  * Deletes the comment
  * @route POST /comments/:id
  * @group Comment
+ * @param {int} id.required - id of comment
  */
-routes.delete('/:id', comment.deleteById)
+routes.delete('*', comment.deleteById)
 
 /**
- * Updates a comment with comment
+ * Updates a comment with content
  * @route PUT /comments/:id
  * @group Comment
+ * @param {int} id.required - id of comment
+ * @param {string} content.required - content of the comment
  */
-routes.put('/:id',comment.updateById)
+routes.put('*',comment.updateById)
 
-
+/**
+ * Creates a new comment
+ * @route POST /comments/:id
+ * @group Comment
+ * @param {int} id.required - id of comment
+ * @param {string} content.required - content of the comment
+ */
+routes.post('*',comment.addTo)
 
 module.exports = routes

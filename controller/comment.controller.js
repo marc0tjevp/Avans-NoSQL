@@ -28,4 +28,8 @@ function create (req,res){
 	res.status(200).end()
 }
 
-module.exports={getKarma,voteDown,voteUp,updateById,getByThreadId,deleteById,create}
+function addTo (req,res){
+	res.status(200).end()
+}
+
+module.exports={getKarma,voteDown,voteUp,updateById,getByThreadId,deleteById,create,addTo}
