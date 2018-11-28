@@ -5,8 +5,8 @@ const UpVote = "upvoted"
 const DownVote = "downvoted"
 
 //Save objects
-function saveUser(res,User,next=()=>{}){
-	db.save(User.username,'user',(err,user)=>{
+function saveUser(res,user,next=()=>{}){
+	db.save(user,'user',(err,user)=>{
 		if (err) {
 			onErr(res,err)
 		}
@@ -14,8 +14,8 @@ function saveUser(res,User,next=()=>{}){
 	})
 }
 
-function saveThread(res,Thread,next=()=>{}){
-	db.save(Thread.threadID,'thread',(err,thread)=>{
+function saveThread(res,thread,next=()=>{}){
+	db.save(thread,'thread',(err,thread)=>{
 		if (err) {
 			onErr(res,err)
 		}
@@ -24,7 +24,7 @@ function saveThread(res,Thread,next=()=>{}){
 }
 
 function saveComment(res,comment,next=()=>{}){
-	db.save(comment.commentID,'comment',(err,com)=>{
+	db.save(comment,'comment',(err,com)=>{
 		if (err) {
 			onErr(res,err)
 		}
@@ -34,11 +34,11 @@ function saveComment(res,comment,next=()=>{}){
 
 //create relationships
 function createFriendship(res,user1,user2,next=()=>{}){
-	db.find({username:user1.username},(err,u1)=>{
+	db.find({username:user1},(err,u1)=>{
 		if (err) {
 			onErr(res,err)
 		}
-		db.find({username:user2.username},(err,u2)=>{
+		db.find({username:user2},(err,u2)=>{
 			if(err){
 				onErr(res,err)
 			}
@@ -70,7 +70,7 @@ function createFriendship(res,user1,user2,next=()=>{}){
 }
 
 function createUpvote(res,user,thread,next=()=>{}){
-	db.find({username:user.username},(err,u)=>{
+	db.find({username:user},(err,u)=>{
 		if (err){
 			onErr(res,err)
 		}
@@ -99,7 +99,7 @@ function createUpvote(res,user,thread,next=()=>{}){
 }
 	
 function createDownvote(res,user,thread,next=()=>{}){
-	db.find({username:user.username},(err,u)=>{
+	db.find({username:user},(err,u)=>{
 		if (err){
 			onErr(res,err)
 		}
@@ -131,7 +131,7 @@ function createDownvote(res,user,thread,next=()=>{}){
 //get relationships
 	
 function getFriendships(res,user,depth,next=()=>{}){
-	db.find({username:user.username},(err,users)=>{
+	db.find({username:user},(err,users)=>{
 		if(err){
 			onErr(res,err)
 		}
@@ -161,8 +161,8 @@ function getFriendships(res,user,depth,next=()=>{}){
 		})
 }
 	
-function getUpvotes(res,thread,next=()=>{}){
-	db.find({threadId:thread.threadId},(err,t)=>{
+function getUpvotes(res,threadId,next=()=>{}){
+	db.find({threadId:threadId},(err,t)=>{
 		if (err){
 			onErr(res,err)
 		}
@@ -173,8 +173,8 @@ function getUpvotes(res,thread,next=()=>{}){
 	})
 }
 	
-function getDownvotes(res,thread,next=()=>{}){
-	db.find({threadId:thread.threadId},(err,t)=>{
+function getDownvotes(res,threadId,next=()=>{}){
+	db.find({threadId:threadÍd},(err,t)=>{
 		if (err){
 			onErr(res,err)
 		}
