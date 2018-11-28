@@ -38,6 +38,6 @@ routes.delete('*', friend.deleteByUsername)
  * @route POST /friends
  * @group Friendship
  */
-routes.get('*',friend.getAll)
+routes.get('*', friend.getAll)
 
 module.exports = routes

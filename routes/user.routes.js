@@ -36,7 +36,7 @@ routes.get('/:username', user.getByName)
  * @param {string} oldPassword.required - Old password of user
  * @param {string} newPassword.required - New password of user
  */
-routes.put('*',user.update)
+routes.put('*', user.update)
 
 /**
  * Gets all users

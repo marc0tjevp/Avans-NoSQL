@@ -33,7 +33,7 @@ routes.get('/:id/comments', comment.getByThreadId)
  * @group Thread
  * @param {int} id.required - id of the thread
  */
-routes.get('/:id/karma',thread.getKarma)
+routes.get('/:id/karma', thread.getKarma)
 
 /**
  * Votes the thread up
@@ -41,7 +41,7 @@ routes.get('/:id/karma',thread.getKarma)
  * @group Karma
  * @param {int} id.required - id of the thread
  */
-routes.post('/:id/karma/up',thread.voteUp)
+routes.post('/:id/karma/up', thread.voteUp)
 
 /**
  * Votes the thread down
@@ -49,7 +49,7 @@ routes.post('/:id/karma/up',thread.voteUp)
  * @group Karma
  * @param {int} id.required - id of the thread
  */
-routes.post('/:id/karma/down',thread.voteDown)
+routes.post('/:id/karma/down', thread.voteDown)
 
 /**
  * Deletes a specific thread
@@ -57,7 +57,7 @@ routes.post('/:id/karma/down',thread.voteDown)
  * @group Thread
  * @param {int} id.required - id of the thread
  */
-routes.delete('/:id',thread.deleteById)
+routes.delete('/:id', thread.deleteById)
 
 /**
  * Changes the content of a specific thread
@@ -65,7 +65,7 @@ routes.delete('/:id',thread.deleteById)
  * @group Thread
  * @param {int} id.required - id of the thread
  */
-routes.put('/:id',thread.updateById)
+routes.put('/:id', thread.updateById)
 
 /**
  * Gets all threads
