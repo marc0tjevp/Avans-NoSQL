@@ -40,7 +40,7 @@ routes.delete('*', comment.deleteById)
  * @param {int} id.required - id of comment
  * @param {string} content.required - content of the comment
  */
-routes.put('*',comment.updateById)
+routes.put('*', comment.updateById)
 
 /**
  * Creates a new comment
@@ -49,6 +49,6 @@ routes.put('*',comment.updateById)
  * @param {int} id.required - id of comment
  * @param {string} content.required - content of the comment
  */
-routes.post('*',comment.addTo)
+routes.post('*', comment.addTo)
 
 module.exports = routes

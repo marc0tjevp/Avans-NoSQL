@@ -13,16 +13,27 @@ const NotFoundResponse = require('./model/response/notfound.response')
 const ApiResponse = require('./model/response/api.response')
 
 // Startup log
-console.log(boxen('Studdit API', {padding: { left: 20, right: 20, top: 1, bottom: 1 }, margin: 1, borderStyle: 'double'}));
+console.log(boxen('Studdit API', {
+  padding: {
+    left: 20,
+    right: 20,
+    top: 1,
+    bottom: 1
+  },
+  margin: 1,
+  borderStyle: 'double'
+}));
 
 // Mongoose
 var mongoose = require('mongoose')
-mongoose.connect(config.databases.mongo, { useNewUrlParser: true })
+mongoose.connect(config.databases.mongo, {
+  useNewUrlParser: true
+})
 var db = mongoose.connection
 
 db.on('error', console.error.bind(console, 'Could not connect to ' + config.databases.mongo + ": "))
 
-db.once('open', function() {
+db.once('open', function () {
   console.log('Mongoose: Connected to Mongo Database: ' + config.databases.mongo)
 })
 
@@ -45,17 +56,17 @@ app.get('/', (req, res) => res.send('Hello World!'))
 app.use('/users', user_routes)
 app.use('/friends', friend_routes)
 app.use('/threads', thread_routes)
-app.use('/comments/:id',comment_route)
+app.use('/comments/:id', comment_route)
 
 // Catch 404's
 app.use('*', function (req, res) {
-    res.status('404').json(new NotFoundResponse(req.originalUrl)).end()
+  res.status('404').json(new NotFoundResponse(req.originalUrl)).end()
 })
 
 // Listen on port
 var server = app.listen(process.env.PORT || config.port, function () {
-    var host = server.address().address
-    var port = server.address().port
+  var host = server.address().address
+  var port = server.address().port
 
-    console.log("Express: Listening to Socket: http://localhost/" + port)
+  console.log("Express: Listening to Socket: http://localhost/" + port)
 })

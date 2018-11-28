@@ -1,35 +1,44 @@
 const ApiResponse = require('../model/response/api.response')
 
-function getKarma (req,res){
+function getKarma(req, res) {
 	res.status(200).end()
 }
 
-function voteUp (req,res){
+function voteUp(req, res) {
 	res.status(200).end()
 }
 
-function voteDown (req,res){
+function voteDown(req, res) {
 	res.status(200).end()
 }
 
-function updateById (req,res){
+function updateById(req, res) {
 	res.status(200).end()
 }
 
-function getByThreadId (req,res){
+function getByThreadId(req, res) {
 	res.status(200).json(new ApiResponse(200, "Get friendship by depth Endpoint")).end()
 }
 
-function deleteById (req,res){
+function deleteById(req, res) {
 	res.status(200).json(new ApiResponse(200, "Delete friend by name Endpoint")).end()
 }
 
-function create (req,res){
+function create(req, res) {
 	res.status(200).end()
 }
 
-function addTo (req,res){
+function addTo(req, res) {
 	res.status(200).end()
 }
 
-module.exports={getKarma,voteDown,voteUp,updateById,getByThreadId,deleteById,create,addTo}
+module.exports = {
+	getKarma,
+	voteDown,
+	voteUp,
+	updateById,
+	getByThreadId,
+	deleteById,
+	create,
+	addTo
+}

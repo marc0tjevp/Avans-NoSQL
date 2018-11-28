@@ -31,8 +31,8 @@
     // List with comments on the thread
     comments: [Comment]
     
-  });
+  })
 
-  const Thread = mongoose.model('thread', threadSchema);
+  const Thread = mongoose.model('thread', threadSchema)
 
-  module.exports = Thread;
+  module.exports = Thread

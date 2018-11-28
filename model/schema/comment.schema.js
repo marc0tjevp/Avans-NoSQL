@@ -30,8 +30,8 @@ var CommentSchema = new Schema({
   // Array of comments on a comment
   comments: [this]
 
-});
+})
 
-const Comment = mongoose.model('comment', CommentSchema);
+const Comment = mongoose.model('comment', CommentSchema)
 
-module.exports = Comment;
+module.exports = Comment
