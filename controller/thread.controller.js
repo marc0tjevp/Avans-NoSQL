@@ -101,24 +101,46 @@ function deleteById(req, res) {
 	//Get token
 	var token = req.get('Authoriziation') || ''
 	var decodedUsername = auth.decodeToken(token) || ''
-
-	Thread.findOne({threadID:id},{},(err,t)=>{
-		User.findOne({username:decodedUsername.sub},{},(err,u)=>{
-			if(t.user==u){
+	User.findOne({username:decodedUsername.sub},{},(err,u)=>{
+		Thread.findOne({threadID:id,user:u},{},(err,t)=>{
+			if(t){
 				Thread.deleteOne(t,(err)=>{
 					res.status(200).json(new ApiResponse(200,"deleted")).end()
 				})
 			}
+			res.status(401).json(new ApiResponse(401,"Not Authorised to delete"))
 		})
 	})
 }
 
 function updateById(req, res) {
-	res.status(200).end()
+	//Get params
+	let id = req.params.id || ''
+	let newContent = req.body.content || ''
+
+	//Get token
+	var token = req.get('Authoriziation') || ''
+	var decodedUsername = auth.decodeToken(token) || ''
+	User.findOne({username:decodedUsername.sub},{},(err,u)=>{
+		Thread.findOne({threadID:id,user:u},{},(err,t)=>{
+			if(t){
+				Thread.UpdateOne(t,{content:newContent},(err)=>{
+					res.status(200).json(new ApiResponse(200,"deleted")).end()
+				})
+			}
+			res.status(401).json(new ApiResponse(401,"Not Authorised to delete"))
+		})
+	})
 }
 
 function getAll(req, res) {
-	res.status(200).json(new ApiResponse(200, "Get All Threads Endpoint")).end()
+	//get params
+	let limit = req.query.limit || 100
+	let title = req.query.title || ''
+	 
+	Thread.find({title:new RegExp(title,"i")},{_id:0}).limit(limit).then((err,threads)=>{
+		res.status(200).json(new ApiResponse(200,threads)).end()
+	})
 }
 
 module.exports = {
