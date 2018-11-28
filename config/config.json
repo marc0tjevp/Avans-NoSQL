@@ -2,7 +2,7 @@
     "port": 8080,
     "databases": {
         "mongo": "mongodb://localhost/studdit",
-        "neo4j": ""
+        "neo4j": "http://localhost:7474"
     },
     "developers": [
         {
