@@ -174,7 +174,7 @@ function getUpvotes(res,threadId,next=()=>{}){
 }
 	
 function getDownvotes(res,threadId,next=()=>{}){
-	db.find({threadId:threadÍd},(err,t)=>{
+	db.find({threadId:threadId},(err,t)=>{
 		if (err){
 			onErr(res,err)
 		}
