@@ -1,8 +1,9 @@
 const ApiResponse = require('../model/response/api.response')
-const neo = require('../neodb/neodbhelper')
+const neodb = require('../neodb/neodbhelper')
 const User = require('../model/schema/user.schema')
 const Thread = require('../model/schema/thread.schema')
-const Comment = require('../model/schema/comment.schema')
+const Comment = require('../model/schema/comment.schema').Comment
+const auth = require('../config/authentication.config')
 
 function getKarma(req, res) {
 	//Get params
@@ -23,7 +24,7 @@ function voteUp(req, res) {
 	let id = req.params.id || ''
 
 	//Get token
-	var token = req.get('Authoriziation') || ''
+	var token = req.get('Authorization') || ''
 	var decodedUsername = auth.decodeToken(token) || ''
 
 	if(id == ''){
@@ -40,7 +41,7 @@ function voteDown(req, res) {
 	let id = req.params.id || ''
 
 	//Get token
-	var token = req.get('Authoriziation') || ''
+	var token = req.get('Authorization') || ''
 	var decodedUsername = auth.decodeToken(token) || ''
 
 	if(id == ''){
@@ -58,7 +59,7 @@ function updateById(req, res) {
 	let newContent = req.body.content || ''
 
 	//Get token
-	var token = req.get('Authoriziation') || ''
+	var token = req.get('Authorization') || ''
 	var decodedUsername = auth.decodeToken(token) || ''
 	User.findOne({username:decodedUsername.sub},{},(err,u)=>{
 		Comment.findOne({commentID:id,user:u},{},(err,c)=>{
@@ -86,7 +87,7 @@ function deleteById(req, res) {
 	let id = req.params.id || ''
 
 	//Get token
-	var token = req.get('Authoriziation') || ''
+	var token = req.get('Authorization') || ''
 	var decodedUsername = auth.decodeToken(token) || ''
 	User.findOne({username:decodedUsername.sub},{},(err,u)=>{
 		Comment.findOne({commentID:id,user:u},{},(err,c)=>{
@@ -103,22 +104,33 @@ function deleteById(req, res) {
 }
 
 function create(req, res) {
+
 	//Get params
 	let id = req.params.id || ''
 	let content = req.body.content
 
 	//Get token
-	var token = req.get('Authoriziation') || ''
+	var token = req.get('Authorization') || ''
 	var decodedUsername = auth.decodeToken(token) || ''
+
+	// Find user
 	User.findOne({username:decodedUsername.sub},{},(err,u)=>{
+
+		// Find thread
 		Thread.findOne({threadID:id},{},(err,t)=>{
+
+			// Create Comment
 			var comment = new Comment({threadID:t,content:content,user:u})
+
+			// Save the comment
 			comment.save(function(err,c){
 				neodb.saveComment(res,c.commentID,()=>{
 					res.status(200).json(new ApiResponse(200,c)).end()
 				})
 			})
+
 		})
+		
 	})
 }
 
@@ -128,7 +140,7 @@ function addTo(req, res) {
 	let content = req.body.content
 
 	//Get token
-	var token = req.get('Authoriziation') || ''
+	var token = req.get('Authorization') || ''
 	var decodedUsername = auth.decodeToken(token) || ''
 	User.findOne({username:decodedUsername.sub},{},(err,u)=>{
 		var comment = new Comment({content:content,user:u})
