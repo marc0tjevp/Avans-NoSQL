@@ -4,7 +4,7 @@
   "description": "Studdit - Ask questions, start threads and comment on interesting stuff.",
   "main": "server.js",
   "scripts": {
-    "test": "echo \"Error: no test specified\" && exit 1"
+    "test": "mocha --timeout 10000" 
   },
   "repository": {
     "type": "git",
@@ -17,14 +17,19 @@
   },
   "homepage": "https://github.com/marc0tjevp/Avans-NoSQL#readme",
   "dependencies": {
+    "assert": "^1.4.1",
     "body-parser": "^1.18.3",
     "boxen": "^2.0.0",
+    "chai": "^4.2.0",
+    "chai-http": "^4.2.0",
     "express": "^4.16.4",
     "jwt-simple": "^0.5.5",
+    "mocha": "^5.2.0",
     "moment": "^2.22.2",
     "mongoose": "^5.3.13",
     "morgan": "^1.9.1",
-    "seraph": "^0.15.3"
+    "seraph": "^0.15.3",
+    "supertest": "^3.3.0"
   },
   "devDependencies": {
     "express-swagger-generator": "^1.1.10"

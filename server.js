@@ -26,9 +26,11 @@ console.log(boxen('Studdit API', {
 
 // Mongoose
 var mongoose = require('mongoose')
+
 mongoose.connect(config.databases.mongo, {
   useNewUrlParser: true
 })
+
 var db = mongoose.connection
 
 db.on('error', console.error.bind(console, 'Could not connect to ' + config.databases.mongo + ": "))
@@ -70,3 +72,7 @@ var server = app.listen(process.env.PORT || config.port, function () {
 
   console.log("Express: Listening to Socket: http://localhost/" + port)
 })
+
+module.exports = {
+  app
+}

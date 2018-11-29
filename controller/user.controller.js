@@ -31,7 +31,10 @@ function update(req, res) {
 
 	// Get token from header
 	var token = req.get('Authorization') || ''
-	var decodedUsername = auth.decodeToken(token) || ''
+	var decodedUsername
+	if (token != '') {
+		decodedUsername= auth.decodeToken(token)
+	}
 
 	// Check if all params are present
 	if (uname == '' || pass == '' || newpassword == '') {
