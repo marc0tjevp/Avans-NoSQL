@@ -9,13 +9,16 @@ function getThreadById(req, res) {
 	//Get params
 	let threadId = req.params.id || ''
 
-	Thread.findOne({ threadID: threadId },{ comments: 0 },
+	Thread.findOne({ _id: threadId },{ comments: 0 },
 		function(err, thread){
-			res.status(200).json(new ApiResponse(200,thread))
+			if(thread){
+			res.status(200).json(new ApiResponse(200,thread)).end()
+			} else{
+				res.status(404).json(new ApiResponse(404,"Thread not found")).end()
+			}
 		}
 	)
 	
-	res.status(200).json(new ApiResponse(200, "Get Thread by Id Endpoint")).end()
 }
 
 function getKarma(req, res) {
@@ -28,7 +31,7 @@ function getKarma(req, res) {
 	}
 	neodb.getThreadDownvotes(res, id ,(downVotes)=>{
 		neodb.getThreadUpvotes(res, id ,(upVotes)=>{
-			res.status(200).json(new ApiResponse(200,"Karma = " + upVotes + "  - " + downVotes + " = " + (upVotes - downVotes)))
+			res.status(200).json(new ApiResponse(200,"Karma = " + upVotes + "  - " + downVotes + " = " + (upVotes - downVotes))).end()
 		})
 	})
 }
@@ -47,7 +50,7 @@ function voteUp(req, res) {
 	}
 
 	neodb.createThreadUpvote(res, decodedUsername.sub , id ,()=>{
-		res.status(200).json(new ApiResponse(200, decodedUsername.sub+" upvoted the thread with id: " + id))
+		res.status(200).json(new ApiResponse(200, decodedUsername.sub+" upvoted the thread with id: " + id)).end()
 	})
 }
 
@@ -65,7 +68,7 @@ function voteDown(req, res) {
 	}
 
 	neodb.createThreadDownvote(res,decodedUsername.sub , id ,()=>{
-		res.status(200).json(new ApiResponse(200, decodedUsername.sub+" downvoted the thread with id: " + id))
+		res.status(200).json(new ApiResponse(200, decodedUsername.sub+" downvoted the thread with id: " + id)).end()
 	})
 }
 
@@ -76,23 +79,33 @@ function create(req, res) {
 	let con = req.body.content || ''
 
 	//Get token
-	var token = req.get('Authoriziation') || ''
-	var decodedUsername = auth.decodeToken(token) || ''
-
-	User.findOne({ username: decodedUsername.sub },{_id:0},
-		function(err, u){
-			var thread = new Thread({
-				user: u,
-				title: t,
-				content: con
-			})
-			thread.save(function(err,t){
-				neodb.saveThread(res,t.threadID,()=>{
-					res.status(200).json(new ApiResponse(200,t)).end()
+	var token = req.get('Authorization') || ''
+    var decodedUsername
+    if (token != '') {
+        decodedUsername= auth.decodeToken(token)
+    }
+		console.log(decodedUsername)
+		User.findOne({ username: decodedUsername.sub },{_id:1},
+			function(err, u){
+				var thread = new Thread({
+					user: u._id,
+					title: t,
+					content: con
 				})
-			})
-		}
-	)
+				thread.save(function(err){
+					console.log(err)
+					Thread.findOne(thread,{},(err,t)=>{
+						neodb.saveThread(res,t._id,(err,thread)=>{
+						res.status(200).json(new ApiResponse(200,t)).end()
+					})
+					})
+					
+					
+				})
+			}
+		)
+	
+	
 }
 
 function deleteById(req, res) {
@@ -101,36 +114,51 @@ function deleteById(req, res) {
 	let id = req.params.id || ''
 
 	//Get token
-	var token = req.get('Authoriziation') || ''
-	var decodedUsername = auth.decodeToken(token) || ''
-	User.findOne({username:decodedUsername.sub},{},(err,u)=>{
-		Thread.findOne({threadID:id,user:u},{},(err,t)=>{
+	var token = req.get('Authorization') || ''
+	var decodedUsername
+	
+    if (token != '') {
+        decodedUsername= auth.decodeToken(token)
+	}
+	
+	User.findOne({username: decodedUsername.sub},{},(err,u)=>{
+	
+		Thread.findOne({_id:id,user:u._id},{},(err,t)=>{
+			
 			if(t){
 				Thread.deleteOne(t,(err)=>{
 					res.status(200).json(new ApiResponse(200,"deleted")).end()
 				})
-			}
+			} else{
 			res.status(401).json(new ApiResponse(401,"Not Authorised to delete"))
+			}
 		})
 	})
 }
 
 function updateById(req, res) {
+	var token = req.get('Authorization') || ''
 	//Get params
 	let id = req.params.id || ''
 	let newContent = req.body.content || ''
 
 	//Get token
-	var token = req.get('Authoriziation') || ''
-	var decodedUsername = auth.decodeToken(token) || ''
+	
+	console.log("UPDATE "+token + " + id = "+id)
+	var decodedUsername
+	if(token!=''){
+		decodedUsername = auth.decodeToken(token)
+	}
 	User.findOne({username:decodedUsername.sub},{},(err,u)=>{
-		Thread.findOne({threadID:id,user:u},{},(err,t)=>{
+		Thread.findOne({_id:id,user:u._id},{},(err,t)=>{
 			if(t){
-				Thread.UpdateOne(t,{content:newContent},(err)=>{
+				
+				Thread.updateOne(t,{content:newContent},(err)=>{
 					res.status(200).json(new ApiResponse(200,"deleted")).end()
 				})
-			}
+			}else{
 			res.status(401).json(new ApiResponse(401,"Not Authorised to delete"))
+			}
 		})
 	})
 }
