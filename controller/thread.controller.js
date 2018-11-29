@@ -26,8 +26,8 @@ function getKarma(req, res) {
 	if(id == ''){
 		res.status(400).json(new ApiResponse(400, "No threadId given"))
 	}
-	neodb.getDownvotes(res,{ threadId: id },(downVotes)=>{
-		neodb.getUpvotes(res,{ threadId: id },(upVotes)=>{
+	neodb.getThreadDownvotes(res,{ threadId: id },(downVotes)=>{
+		neodb.getThreadUpvotes(res,{ threadId: id },(upVotes)=>{
 			res.status(200).json(new ApiResponse(200,"Karma = " + upVotes + "  - " + downVotes + " = " + (upVotes - downVotes)))
 		})
 	})
@@ -46,7 +46,7 @@ function voteUp(req, res) {
 		res.status(400).json(new ApiResponse(400, "No threadId given"))
 	}
 
-	neodb.createUpvote(res,{ username: decodedUsername.sub },{ threadId: id },()=>{
+	neodb.createThreadUpvote(res,{ username: decodedUsername.sub },{ threadId: id },()=>{
 		res.status(200).json(new ApiResponse(200, decodedUsername.sub+" upvoted the thread with id: " + id))
 	})
 }
@@ -64,7 +64,7 @@ function voteDown(req, res) {
 		res.status(400).json(new ApiResponse(400, "No threadId given"))
 	}
 
-	neodb.createDownvote(res,{ username: decodedUsername.sub },{ threadId: id },()=>{
+	neodb.createThreadDownvote(res,{ username: decodedUsername.sub },{ threadId: id },()=>{
 		res.status(200).json(new ApiResponse(200, decodedUsername.sub+" downvoted the thread with id: " + id))
 	})
 }
