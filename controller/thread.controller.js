@@ -42,7 +42,7 @@ function voteUp(req, res) {
 	let id = req.params.id || ''
 
 	//Get token
-	var token = req.get('Authoriziation') || ''
+	var token = req.get('Authorization') || ''
 	var decodedUsername = auth.decodeToken(token) || ''
 
 	if(id == ''){
@@ -60,7 +60,7 @@ function voteDown(req, res) {
 	let id = req.params.id || ''
 
 	//Get token
-	var token = req.get('Authoriziation') || ''
+	var token = req.get('Authorization') || ''
 	var decodedUsername = auth.decodeToken(token) || ''
 
 	if(id == ''){
@@ -84,7 +84,7 @@ function create(req, res) {
     if (token != '') {
         decodedUsername= auth.decodeToken(token)
     }
-		console.log(decodedUsername)
+		console.log(token)
 		User.findOne({ username: decodedUsername.sub },{_id:1},
 			function(err, u){
 				var thread = new Thread({
