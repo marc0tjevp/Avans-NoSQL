@@ -260,6 +260,7 @@ function getCommentUpvotes(res,commentId,next=()=>{}){
 	
 function getThreadDownvotes(res,commentId,next=()=>{}){
 	db.find({threadId:threadÍd},(err,t)=>{
+
 		if (err){
 			onErr(res,err)
 		}
