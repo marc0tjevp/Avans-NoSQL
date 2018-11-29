@@ -257,9 +257,24 @@ function getCommentUpvotes(res,commentId,next=()=>{}){
 		})
 	})
 }
+
+function getThreadUpvotes(res,threadId,next=()=>{}){
+	db.find({threadId:threadId},(err,t)=>{
+
+		if (err){
+			onErr(res,err)
+		}
+		db.relationships(t,'all',UpVote,(err,rel)=>{
+			if (err){
+				onErr(res,err)
+			}
+			next(rel.length)
+		})
+	})
+}
 	
-function getThreadDownvotes(res,commentId,next=()=>{}){
-	db.find({threadId:threadÍd},(err,t)=>{
+function getThreadDownvotes(res,threadId,next=()=>{}){
+	db.find({threadId:threadId},(err,t)=>{
 
 		if (err){
 			onErr(res,err)
