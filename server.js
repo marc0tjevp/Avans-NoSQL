@@ -22,7 +22,7 @@ console.log(boxen('Studdit API', {
   },
   margin: 1,
   borderStyle: 'double'
-}));
+}))
 
 // Mongoose
 var mongoose = require('mongoose')
@@ -70,7 +70,7 @@ var server = app.listen(process.env.PORT || config.port, function () {
   var host = server.address().address
   var port = server.address().port
 
-  console.log("Express: Listening to Socket: http://localhost/" + port)
+  console.log("Express: Listening to Socket: http://localhost:" + port)
 })
 
 module.exports = {
