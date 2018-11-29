@@ -38,28 +38,24 @@ function createFriendship(res,user1,user2,next){
 	db.find({username:user1},(err,u1)=>{
 		
 		db.find({username:user2},(err,u2)=>{
-			
-			db.relationships(u1,'out',Friend,(err,rels)=>{
-				if(rels){
-				if(rels.some((r)=>{
-					db.read(r,(err,rr)=>{
-						if((rr.start==u1&&rr.end==u2)||(rr.start==u2&&rr.end==u1)){
-							return true
+			getFriendships(res,user1,1,(friend1)=>{
+				
+				if(friend1.some((value,index,array)=>{return value==user2})){
+					getFriendships(res,user2,1,(friend2)=>{
+				
+						if(friend2.some((value,index,array)=>{return value==user1})){
+							db.relate(u1,Friend,u2,(err,rel)=>{
+					
+								next("Friendship added")
+							})
+						}else{
+							next("Friendship already exists")
 						}
 					})
-				})){
-					next({info:"Friendship already exists"})
 				}else{
-				db.relate(u1,Friend,u2,(err,rel)=>{
-					
-					next({"info":"Friendship added"})
-				})
-				}
-				}else{
-				  onErr(res,err)
+					next("Friendship already exists")
 				}
 			})
-		
 		})
 		
 	})
@@ -197,6 +193,7 @@ function getFriendships(res,user,depth,next){
 		for(i=0;i<depth;i++){
 			friends.forEach((friend)=>{
 				db.relationships(friend,'all',Friend,(err,rels)=>{
+					var itemsleft = rels.length
 					rels.forEach((rel)=>{
 							if(rel){
 								db.read(rel.start,(err,found)=>{
@@ -205,23 +202,27 @@ function getFriendships(res,user,depth,next){
 										var list = []
 										const map = new Map();
 										for (const item of friends) {
-    										if(!map.has(item.id)){
-        										map.set(item.id, true);    // set any value to Map
+    										if(!map.has(item.username)){
+        										map.set(item.username, true);    // set any value to Map
         										list.push({
             										username: item.username
 												});
 											}
 										}
 										friends = list
-										if((depth-i)==0){
+										
+										if(itemsleft==1&&depth-i==0){
 											next(friends)
 											i++
+										}else{
+											itemsleft--
 										}
 									})
 									
 								})
 								}
 							})
+							
 						})
 					})
 				}
