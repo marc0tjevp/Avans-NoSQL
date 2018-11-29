@@ -17,7 +17,9 @@ function getByDepth(req, res) {
 	}
 
 	// Get all friends
-	neo.getFriendships(res, username, depth)
+	neo.getFriendships(res, username, depth,(rels)=>{
+		res.status(200).json(new ApiResponse(200,rels)).end()
+	})
 
 }
 

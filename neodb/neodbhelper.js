@@ -1,11 +1,12 @@
 const server = require('../config/config.json').databases.neo4j
 const db = require('seraph')(server)
+const body = require('body-parser')
 const Friend = "knows"
 const UpVote = "upvoted"
 const DownVote = "downvoted"
 
 //Save objects
-function saveUser(res,user,next=()=>{}){
+function saveUser(res,user,next){
 	db.save({username:user},'user',(err,user)=>{
 		if (err) {
 			onErr(res,err)
@@ -14,7 +15,7 @@ function saveUser(res,user,next=()=>{}){
 	})
 }
 
-function saveThread(res,thread,next=()=>{}){
+function saveThread(res,thread,next){
 	db.save({threadId: thread},'thread',(err,thread)=>{
 		if (err) {
 			onErr(res,err)
@@ -23,7 +24,7 @@ function saveThread(res,thread,next=()=>{}){
 	})
 }
 
-function saveComment(res,comment,next=()=>{}){
+function saveComment(res,comment,next){
 	db.save({commentId:comment},'comment',(err,com)=>{
 		if (err) {
 			onErr(res,err)
@@ -33,43 +34,38 @@ function saveComment(res,comment,next=()=>{}){
 }
 
 //create relationships
-function createFriendship(res,user1,user2,next=()=>{}){
+function createFriendship(res,user1,user2,next){
 	db.find({username:user1},(err,u1)=>{
-		if (err) {
-			onErr(res,err)
-		}
+		
 		db.find({username:user2},(err,u2)=>{
-			if(err){
-				onErr(res,err)
-			}
+			
 			db.relationships(u1,'out',Friend,(err,rels)=>{
-				if (err){
-				onErr(res,err)
-				}
-				rels.forEach((r)=>{
+				if(rels){
+				if(rels.some((r)=>{
 					db.read(r,(err,rr)=>{
-						if(err){
-							onErr(res,err)
-						}
 						if((rr.start==u1&&rr.end==u2)||(rr.start==u2&&rr.end==u1)){
-							next({"info":"Friendship already Exists"})
+							return true
 						}
 					})
-				})
+				})){
+					next({info:"Friendship already exists"})
+				}else{
 				db.relate(u1,Friend,u2,(err,rel)=>{
-					if(err){
-						onErr(res,err)
-					}
+					
 					next({"info":"Friendship added"})
 				})
-				
+				}
+				}else{
+				  onErr(res,err)
+				}
 			})
+		
 		})
 		
 	})
 }
 
-function createThreadUpvote(res,user,thread,next=()=>{}){
+function createThreadUpvote(res,user,thread,next){
 	db.find({username:user},(err,u)=>{
 		if (err){
 			onErr(res,err)
@@ -79,7 +75,7 @@ function createThreadUpvote(res,user,thread,next=()=>{}){
 				onErr(res,err)
 			}
 			if(vote){
-				Console.log("Downvote found, deleting")
+				
 				db.delete(vote,(err)=>{
 					if(err){
 						onErr(res,err)
@@ -98,7 +94,7 @@ function createThreadUpvote(res,user,thread,next=()=>{}){
 	})
 }
 	
-function createThreadDownvote(res,user,thread,next=()=>{}){
+function createThreadDownvote(res,user,thread,next){
 	db.find({username:user},(err,u)=>{
 		if (err){
 			onErr(res,err)
@@ -108,7 +104,7 @@ function createThreadDownvote(res,user,thread,next=()=>{}){
 				onErr(res,err)
 			}
 			if(vote){
-				Console.log("Upvote found, deleting")
+				
 				db.delete(vote,(err)=>{
 					if(err){
 						onErr(res,err)
@@ -128,7 +124,7 @@ function createThreadDownvote(res,user,thread,next=()=>{}){
 	})
 }
 
-function createCommentUpvote(res,user,comment,next=()=>{}){
+function createCommentUpvote(res,user,comment,next){
 	db.find({username:user},(err,u)=>{
 		if (err){
 			onErr(res,err)
@@ -138,7 +134,7 @@ function createCommentUpvote(res,user,comment,next=()=>{}){
 				onErr(res,err)
 			}
 			if(vote){
-				Console.log("Downvote found, deleting")
+				
 				db.delete(vote,(err)=>{
 					if(err){
 						onErr(res,err)
@@ -157,7 +153,7 @@ function createCommentUpvote(res,user,comment,next=()=>{}){
 	})
 }
 	
-function createCommentDownvote(res,user,comment,next=()=>{}){
+function createCommentDownvote(res,user,comment,next){
 	db.find({username:user},(err,u)=>{
 		if (err){
 			onErr(res,err)
@@ -167,7 +163,7 @@ function createCommentDownvote(res,user,comment,next=()=>{}){
 				onErr(res,err)
 			}
 			if(vote){
-				Console.log("Upvote found, deleting")
+				
 				db.delete(vote,(err)=>{
 					if(err){
 						onErr(res,err)
@@ -189,38 +185,50 @@ function createCommentDownvote(res,user,comment,next=()=>{}){
 	
 //get relationships
 	
-function getFriendships(res,user,depth,next=()=>{}){
+function getFriendships(res,user,depth,next){
+	depth++
 	db.find({username:user},(err,users)=>{
 		if(err){
 			onErr(res,err)
 		}
+		var u = users
 		var friends = []
-		var u = users[0]
-		friends.concat([u])
-		for(i = 0;i<depth;i++){
-			var frnds = []
+		friends = friends.concat(u)
+		for(i=0;i<depth;i++){
 			friends.forEach((friend)=>{
 				db.relationships(friend,'all',Friend,(err,rels)=>{
-					if(err){
-						onErr(res,err)
-					}
 					rels.forEach((rel)=>{
-						db.read(rel,(err,r)=>{
-							if(err){
-								onErr(res,err)
-							}
-							frnds.concat([r.start,r.end]).unique
+							if(rel){
+								db.read(rel.start,(err,found)=>{
+									db.read(rel.end,(err,found1)=>{
+										friends = friends.concat([found,found1])
+										var list = []
+										const map = new Map();
+										for (const item of friends) {
+    										if(!map.has(item.id)){
+        										map.set(item.id, true);    // set any value to Map
+        										list.push({
+            										username: item.username
+												});
+											}
+										}
+										friends = list
+										if((depth-i)==0){
+											next(friends)
+											i++
+										}
+									})
+									
+								})
+								}
+							})
 						})
 					})
-				})
-			})
-			friends=frnds
-		}
-			next(friends.unique)
-		})
+				}
+	})
 }
 	
-function getThreadUpvotes(res,threadId,next=()=>{}){
+function getThreadUpvotes(res,threadId,next){
 	db.find({threadId:threadId},(err,t)=>{
 		if (err){
 			onErr(res,err)
@@ -232,7 +240,7 @@ function getThreadUpvotes(res,threadId,next=()=>{}){
 	})
 }
 	
-function getCommentDownvotes(res,commentId,next=()=>{}){
+function getCommentDownvotes(res,commentId,next){
 	db.find({commentId:commentId},(err,t)=>{
 		if (err){
 			onErr(res,err)
@@ -246,7 +254,7 @@ function getCommentDownvotes(res,commentId,next=()=>{}){
 	})
 }
 
-function getCommentUpvotes(res,commentId,next=()=>{}){
+function getCommentUpvotes(res,commentId,next){
 	db.find({commentId:commentId},(err,t)=>{
 		if (err){
 			onErr(res,err)
@@ -258,7 +266,7 @@ function getCommentUpvotes(res,commentId,next=()=>{}){
 	})
 }
 
-function getThreadUpvotes(res,threadId,next=()=>{}){
+function getThreadUpvotes(res,threadId,next){
 	db.find({threadId:threadId},(err,t)=>{
 
 		if (err){
@@ -273,7 +281,7 @@ function getThreadUpvotes(res,threadId,next=()=>{}){
 	})
 }
 	
-function getThreadDownvotes(res,threadId,next=()=>{}){
+function getThreadDownvotes(res,threadId,next){
 	db.find({threadId:threadId},(err,t)=>{
 
 		if (err){
@@ -289,7 +297,7 @@ function getThreadDownvotes(res,threadId,next=()=>{}){
 }
 	
 //deletes relationships
-function deleteFriendship(res,user1,user2,next=()=>{}){
+function deleteFriendship(res,user1,user2,next){
 	db.find({username:user1.username},(err,u1)=>{
 		if (err){
 			onErr(res,err)
@@ -332,5 +340,5 @@ module.exports={saveUser,saveComment,saveThread,
 	createThreadDownvote,createThreadUpvote,createFriendship,
 	createCommentDownvote,createCommentUpvote,
 	getThreadDownvotes,getThreadUpvotes,getFriendships,
-	getCommentUpvotes,
+	getCommentUpvotes,getCommentDownvotes,
 	deleteFriendship}
