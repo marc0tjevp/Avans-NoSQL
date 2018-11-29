@@ -2,7 +2,7 @@
   var Schema = mongoose.Schema;
   const ObjectId = mongoose.Schema.Types.ObjectId
   
-  const Comment = require('./comment.schema')
+  const Comment = require('./comment.schema.js')
 
   var threadSchema = new Schema({
 

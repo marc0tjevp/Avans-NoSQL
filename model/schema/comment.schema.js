@@ -19,7 +19,7 @@ var CommentSchema = new Schema({
     type: String,
     required: true
   },
-  
+
   // The User that made the comment
   user: {
     type: ObjectId,
