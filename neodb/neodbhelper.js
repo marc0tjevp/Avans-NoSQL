@@ -317,5 +317,5 @@ module.exports={saveUser,saveComment,saveThread,
 	createThreadDownvote,createThreadUpvote,createFriendship,
 	createCommentDownvote,createCommentUpvote,
 	getThreadDownvotes,getThreadUpvotes,getFriendships,
-	getCommentDownvotes,getCommentUpvotes,
+	getCommentUpvotes,
 	deleteFriendship}

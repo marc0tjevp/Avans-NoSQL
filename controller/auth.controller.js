@@ -1,6 +1,7 @@
 const ApiResponse = require('../model/response/api.response')
 const auth = require('../config/authentication.config')
 const User = require('../model/schema/user.schema')
+const neo = require('../neodb/neodbhelper')
 
 function login(req, res) {
 
@@ -69,11 +70,12 @@ function register(req, res) {
             // Username is not taken yet, insert the new user
             else {
                 user.save().then(
-                    res.status(200).json(new ApiResponse(200, user)).end()
+                    neo.saveUser(res, user, function() {
+                        res.status(200).json(new ApiResponse(200, user)).end()
+                    })
                 )
             }
         })
-
     }
 
     // Send message if parameters are empty
