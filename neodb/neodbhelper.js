@@ -232,8 +232,8 @@ function getThreadUpvotes(res,threadId,next=()=>{}){
 	})
 }
 	
-function getThreadDownvotes(res,threadId,next=()=>{}){
-	db.find({threadId:threadId},(err,t)=>{
+function getCommentDownvotes(res,commentId,next=()=>{}){
+	db.find({commentId:commentId},(err,t)=>{
 		if (err){
 			onErr(res,err)
 		}
