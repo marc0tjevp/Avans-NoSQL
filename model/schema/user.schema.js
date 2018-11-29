@@ -1,4 +1,4 @@
-var mongoose = require('mongoose');
+var mongoose = require('mongoose')
 var Schema = mongoose.Schema;
 
 var userSchema = new Schema({
@@ -18,6 +18,6 @@ var userSchema = new Schema({
 
 })
 
-const User = mongoose.model('user', userSchema);
+const User = mongoose.model('user', userSchema)
 
-module.exports = User;
+module.exports = User
