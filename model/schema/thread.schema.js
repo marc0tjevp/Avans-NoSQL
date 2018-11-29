@@ -2,7 +2,7 @@
   var Schema = mongoose.Schema;
   const ObjectId = mongoose.Schema.Types.ObjectId
   
-  const Comment = require('./comment.schema')
+  const Comment = require('./comment.schema.js')
 
   var threadSchema = new Schema({
 
@@ -29,7 +29,7 @@
     },
 
     // List with comments on the thread
-    comments: [Comment]
+     comments: [Comment.CommentSchema]
     
   })
 
