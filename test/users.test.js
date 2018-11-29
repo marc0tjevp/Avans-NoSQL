@@ -39,6 +39,7 @@ describe('Users', () => {
             username: 'MarcoTest',
             password: 'Test1234'
         })
+
         const token = auth.encodeToken("MarcoTest")
 
         user.save().then(() => {
@@ -58,7 +59,7 @@ describe('Users', () => {
         })
     })
 
-    it('should return a token when providing valid information', (done) => {
+    it('Should return status 200 when changing password', (done) => {
 
         const user = new User({
             username: 'MarcoTest',
@@ -80,7 +81,6 @@ describe('Users', () => {
                     res.should.have.status(200)
                     res.should.be.json
                     res.body.should.be.a('object')
-                    console.log(res.body)
                     done()
                 })
         })
