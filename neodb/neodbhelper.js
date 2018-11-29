@@ -6,7 +6,7 @@ const DownVote = "downvoted"
 
 //Save objects
 function saveUser(res,user,next=()=>{}){
-	db.save(user,'user',(err,user)=>{
+	db.save({username:user},'user',(err,user)=>{
 		if (err) {
 			onErr(res,err)
 		}
@@ -15,7 +15,7 @@ function saveUser(res,user,next=()=>{}){
 }
 
 function saveThread(res,thread,next=()=>{}){
-	db.save(thread,'thread',(err,thread)=>{
+	db.save({threadId: thread},'thread',(err,thread)=>{
 		if (err) {
 			onErr(res,err)
 		}
@@ -24,7 +24,7 @@ function saveThread(res,thread,next=()=>{}){
 }
 
 function saveComment(res,comment,next=()=>{}){
-	db.save(comment,'comment',(err,com)=>{
+	db.save({commentId:comment},'comment',(err,com)=>{
 		if (err) {
 			onErr(res,err)
 		}
