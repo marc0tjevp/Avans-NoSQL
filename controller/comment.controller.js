@@ -11,8 +11,8 @@ function getKarma(req, res) {
 	if(id == ''){
 		res.status(400).json(new ApiResponse(400, "No id given"))
 	}
-	neodb.getThreadDownvotes(res, id ,(downVotes)=>{
-		neodb.getThreadUpvotes(res,id ,(upVotes)=>{
+	neodb.getCommentDownvotes(res, id ,(downVotes)=>{
+		neodb.getCommentUpvotes(res,id ,(upVotes)=>{
 			res.status(200).json(new ApiResponse(200,"Karma = " + upVotes + "  - " + downVotes + " = " + (upVotes - downVotes)))
 		})
 	})

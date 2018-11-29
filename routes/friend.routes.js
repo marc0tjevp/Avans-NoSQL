@@ -15,7 +15,7 @@ routes.get('/threads/:depth', friend.getThreadByDepth)
  * @group Friendship
  * @param {int} depth.required - Depth of friends
  */
-routes.get('/:depth', friend.getByDepth)
+routes.get('/:username/depth/:depth', friend.getByDepth)
 
 /**
  * Adds a relation between two users
@@ -38,6 +38,6 @@ routes.delete('*', friend.deleteByUsername)
  * @route POST /friends
  * @group Friendship
  */
-routes.get('*', friend.getAll)
+routes.get('/:username', friend.getAll)
 
 module.exports = routes

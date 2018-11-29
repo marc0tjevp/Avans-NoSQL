@@ -19,7 +19,7 @@ var CommentSchema = new Schema({
     type: String,
     required: true
   },
-  
+
   // The User that made the comment
   user: {
     type: ObjectId,
@@ -34,4 +34,7 @@ var CommentSchema = new Schema({
 
 const Comment = mongoose.model('comment', CommentSchema)
 
-module.exports = Comment
+module.exports = {
+  Comment,
+  CommentSchema
+}
