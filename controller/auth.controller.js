@@ -70,7 +70,7 @@ function register(req, res) {
             // Username is not taken yet, insert the new user
             else {
                 user.save().then(
-                    neo.saveUser(res, user, function() {
+                    neo.saveUser(res, user.username, function() {
                         res.status(200).json(new ApiResponse(200, user)).end()
                     })
                 )
