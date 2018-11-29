@@ -4,7 +4,8 @@
   "description": "Studdit - Ask questions, start threads and comment on interesting stuff.",
   "main": "server.js",
   "scripts": {
-    "test": "mocha --timeout 10000" 
+    "test": "mocha",
+	"posttest":"node server.js"
   },
   "repository": {
     "type": "git",
