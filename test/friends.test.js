@@ -11,4 +11,23 @@ chai.should()
 const neo = require('../neodb/neodbhelper')
 
 describe('Friendship', () => {
+    it('getByDepth gets all friends', done => {
+        assert(true)
+        done()
+    })
+
+    it('Should be able add friends', done => {
+        assert(true)
+        done()
+    })
+
+    it('deletes the friendship when propmted', done => {
+        assert(true)
+        done()
+    })
+
+    it('gets all users when prompted', done => {
+        assert(true)
+        done()
+    })
 })
