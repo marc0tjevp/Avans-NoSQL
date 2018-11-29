@@ -5,7 +5,19 @@ function getThreadByDepth(req, res) {
 }
 
 function getByDepth(req, res) {
-	res.status(200).json(new ApiResponse(200, "Update Endpoint")).end()
+
+	// Get request parameters
+	let username = req.params.username || ''
+	let depth = req.params.depth || ''
+
+	// Check if username is present (should never trigger because it is required in routing)
+	if (username == '' || depth == '') {
+		res.status(412).json(new ApiResponse(412, "Please provide query parameter: username")).end()
+	}
+
+	// Get all friends
+	neo.getFriendships(res, username, depth)
+
 }
 
 function addFriend(req, res) {
