@@ -1,7 +1,11 @@
 const ApiResponse = require('../model/response/api.response')
+const neo = require('../neodb/neodbhelper')
 
 function getKarma(req, res) {
-	res.status(200).end()
+	//Get parameters
+	let id = req.params.id
+	
+	neo.
 }
 
 function voteUp(req, res) {
