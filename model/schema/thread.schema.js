@@ -29,7 +29,7 @@
     },
 
     // List with comments on the thread
-    comments: [Comment]
+    comments: [Comment.CommentSchema]
     
   })
 

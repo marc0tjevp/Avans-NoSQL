@@ -3,6 +3,7 @@
     "secret": "8NGEEkfD9giE0MjO",
     "databases": {
         "mongo": "mongodb://localhost/studdit",
+        "mongotest": "mongodb://localhost/studdit_test",
         "neo4j": "http://localhost:7474"
     },
     "developers": [
