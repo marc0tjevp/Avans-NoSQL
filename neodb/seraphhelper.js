@@ -47,11 +47,11 @@ function saveRel(preItem1,type,preItem2,properties,next){
 			if(hasItem){
 				var err = {err:"Err: Relationship already exists"}
 				console.log(err)
-				next(err)
+				next(err,null)
 			} else {
 				getNode(preItem1,(i2)=>{
 					db.create(i2,type,i1,properties,(err,rel)=>{
-						next(rel)
+						next(null,rel)
 					})
 				})
 			}
@@ -150,9 +150,30 @@ function deleteRel(preItem1,preItem2,next){
 	})
 }
 
+/// deleteRel deletes a specific node with all relationships along with it
+// preItem is an object with data from the node,
+// next is the callback function with the return value being true, if it was deleted, or false if it failed
+///
+function deleteNode(preItem,next){
+	getNode(preItem,(err,node) => {
+		if(err) {
+			next(false)
+		} else {
+			db.delete(node,true,(err)=>{
+				if(err){
+					next(false)
+				} else{
+					next(true)
+				}
+			})
+		}
+			
+	})
+}
+
 module.exports = {
 	saveNode, saveRel,
 	getAllRels, getNode,
 	getNodeByLabel, getRel,
-	deleteRel,
+	deleteRel, deleteNode
 };
