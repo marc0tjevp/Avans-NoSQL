@@ -71,11 +71,12 @@ function getNodeByLabel(label,next){
 
 /// getAllRels get all relationships with an existing node
 // preItem is an object with data from the node,
+// type is a string with the type of relationship,
 // next is the callback function with err = error and done = the relationships.
 ///
-function getAllRels(preItem,next){
+function getAllRels(preItem,type='',next){
 	getNode(preItem,(i)=>{
-		db.relationships(i,'all','',(err,rels)=>{
+		db.relationships(i,'all',type,(err,rels)=>{
 			next(err,rels);
 			return;
 		})
