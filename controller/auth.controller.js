@@ -70,7 +70,7 @@ function register(req, res) {
             // Username is not taken yet, insert the new user
             else {
                 user.save().then(
-                    neo.saveNode({username: user.username},"User",function(err,u){
+                    neo.saveNode({username: user.username},"user",function(err,u){
                         if(err) {
                             res.status(500).json(new ApiResponse(500,"Error saving to seraph database, please contact the owners, and tell them they fucked up")).end()
                         } else {
