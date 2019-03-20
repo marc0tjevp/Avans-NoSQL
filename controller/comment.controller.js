@@ -1,5 +1,6 @@
 const ApiResponse = require('../model/response/api.response')
 const neodb = require('../neodb/neodbhelper')
+const neo = require('../neodb/seraphhelper')
 const User = require('../model/schema/user.schema')
 const Thread = require('../model/schema/thread.schema')
 const Comment = require('../model/schema/comment.schema').Comment
@@ -15,9 +16,11 @@ function getKarma(req, res) {
 	}
 
 	// Get Up- and Downvotes
-	neodb.getCommentDownvotes(res, id, (downVotes) => {
-		neodb.getCommentUpvotes(res, id, (upVotes) => {
-			res.status(200).json(new ApiResponse(200, "Karma = " + upVotes + "  - " + downVotes + " = " + (upVotes - downVotes)))
+	neo.getAllRels({id:id},"down",function(downVotes){
+		neo.getAllRels({id:id},"up",function(upVotes){
+			up = upVotes.length || 0
+			down = downVotes.length || 0
+			res.status(200).json(new ApiResponse(200, "Karma = " + up + "  - " + down + " = " + (up - down)))
 		})
 	})
 }
@@ -40,10 +43,13 @@ function voteUp(req, res) {
 	}
 
 	// Create upvote
-	neodb.createCommentUpvote(res, decodedUsername.sub, id, () => {
-		res.status(200).json(new ApiResponse(200, decodedUsername.sub + " upvoted the thread with id: " + id))
+	neo.saveRel({username:decodedUsername.sub},"up",{id:id},null,function(err,rel){
+		if(err){
+			res.status(500).json(new ApiResponse(500,"Something went wrong, please contact the owners")).end()
+		} else{
+			res.status(200).json(new ApiResponse(200, decodedUsername.sub + " upvoted the comment with id: " + id))
+		}
 	})
-
 }
 
 function voteDown(req, res) {
@@ -64,8 +70,12 @@ function voteDown(req, res) {
 	}
 
 	// Create upvote
-	neodb.createCommentDownvote(res, decodedUsername.sub, id, () => {
-		res.status(200).json(new ApiResponse(200, decodedUsername.sub + " upvoted the thread with id: " + id))
+	neo.saveRel({username:decodedUsername.sub},"down",{id:id},null,function(err,rel){
+		if(err){
+			res.status(500).json(new ApiResponse(500,"Something went wrong, please contact the owners")).end()
+		} else{
+			res.status(200).json(new ApiResponse(200, decodedUsername.sub + " downvoted the comment with id: " + id))
+		}
 	})
 }
 
@@ -157,8 +167,16 @@ function deleteById(req, res) {
 				Comment.DeleteOne(c), (err) => {
 					if (err) {
 						res.status(401).json(new ApiResponse(401, "Not Authorised to delete"))
+					} else {
+						neo.deleteNode({id:id},function(err){
+							if (err) {
+								res.status(500).json(new ApiResponse(500,"Something went wrong, please contact the owners")).end()
+							} else {
+								res.status(200).json(new ApiResponse(200, "deleted")).end()
+							}
+						})
+						
 					}
-					res.status(200).json(new ApiResponse(200, "deleted")).end()
 				}
 			}
 		})
@@ -202,8 +220,12 @@ function create(req, res) {
 
 			// Save the comment
 			comment.save(function (err, c) {
-				neodb.saveComment(res, c.commentID, () => {
-					res.status(200).json(new ApiResponse(200, c)).end()
+				neo.saveNode({id:comment.commentID},'Comment',function(err,done) {
+					if (err) {
+						res.status(500).json(new ApiResponse(500,"Something went wrong, please contact the owners")).end()
+					} else {
+						res.status(200).json(new ApiResponse(200, c)).end()
+					}
 				})
 			})
 
@@ -238,8 +260,12 @@ function addTo(req, res) {
 			}, {
 				comments: comments.concat([comment])
 			}, (err) => {
-				neodb.saveComment(res, comment.commentID, () => {
-					res.status(200).json(new ApiResponse(200, c)).end()
+				neo.saveNode({id:comment.commentID},'Comment',function(err,done) {
+					if (err) {
+						res.status(500).json(new ApiResponse(500,"Something went wrong, please contact the owners")).end()
+					} else {
+						res.status(200).json(new ApiResponse(200, c)).end()
+					}
 				})
 			})
 
