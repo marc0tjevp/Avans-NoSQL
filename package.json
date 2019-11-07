@@ -27,7 +27,7 @@
     "jwt-simple": "^0.5.5",
     "mocha": "^5.2.0",
     "moment": "^2.22.2",
-    "mongoose": "^5.3.13",
+    "mongoose": "^5.7.5",
     "morgan": "^1.9.1",
     "seraph": "^0.15.3",
     "supertest": "^3.3.0"
