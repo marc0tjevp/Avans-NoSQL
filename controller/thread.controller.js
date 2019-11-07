@@ -3,6 +3,7 @@ const User = require('../model/schema/user.schema')
 const Thread = require('../model/schema/thread.schema')
 const auth = require('../config/authentication.config')
 const neodb = require('../neodb/neodbhelper')
+const neo = require('../neodb/seraphhelper')
 
 function getThreadById(req, res) {
 
@@ -41,8 +42,10 @@ function getKarma(req, res) {
 	}
 
 	// Get Karma
-	neodb.getThreadDownvotes(res, id, (downVotes) => {
-		neodb.getThreadUpvotes(res, id, (upVotes) => {
+	neo.getAllRels({id:id},"upvoted",(err,down) => {
+		neo.getAllRels({id:id},"downvoted",(err,up)=>{
+			var downVotes = down.length || 0
+			var upVotes = up.length || 0
 			res.status(200).json(new ApiResponse(200, "Karma = " + upVotes + "  - " + downVotes + " = " + (upVotes - downVotes))).end()
 		})
 	})
@@ -66,8 +69,12 @@ function voteUp(req, res) {
 	}
 
 	// Create upvote
-	neodb.createThreadUpvote(res, decodedUsername.sub, id, () => {
-		res.status(200).json(new ApiResponse(200, decodedUsername.sub + " upvoted the thread with id: " + id)).end()
+	neo.saveRel({username:decodedUsername.sub},"upvoted",{id:id},null,(err)=>{
+		if(err){
+			res.status(200).json(new ApiResponse(500, "Something went wrong, please contact the owners")).end()
+		} else{
+			res.status(200).json(new ApiResponse(200, decodedUsername.sub + " upvoted the thread with id: " + id)).end()
+		}
 	})
 }
 
@@ -89,8 +96,12 @@ function voteDown(req, res) {
 	}
 
 	// Create downvote
-	neodb.createThreadDownvote(res, decodedUsername.sub, id, () => {
-		res.status(200).json(new ApiResponse(200, decodedUsername.sub + " downvoted the thread with id: " + id)).end()
+	neo.saveRel({username:decodedUsername.sub},"downvoted",{id:id},null,(err)=>{
+		if(err){
+			res.status(200).json(new ApiResponse(500, "Something went wrong, please contact the owners")).end()
+		} else{
+			res.status(200).json(new ApiResponse(200, decodedUsername.sub + " downvoted the thread with id: " + id)).end()
+		}
 	})
 }
 
@@ -127,7 +138,7 @@ function create(req, res) {
 			thread.save(function (err) {
 				console.log(err)
 				Thread.findOne(thread, {}, (err, t) => {
-					neodb.saveThread(res, t._id, (err, thread) => {
+					neo.saveNode({id:t._id},"Thread",(err,thread)=>{
 						res.status(200).json(new ApiResponse(200, t)).end()
 					})
 				})
@@ -169,7 +180,13 @@ function deleteById(req, res) {
 
 			if (t) {
 				Thread.deleteOne(t, (err) => {
-					res.status(200).json(new ApiResponse(200, "deleted")).end()
+					neo.deleteNode({id:id},(err)=>{
+						if(err){
+							res.status(500).json(new ApiResponse(500,"Something went wrong, please contact the owners")).end()
+						} else{
+							res.status(200).json(new ApiResponse(200, "deleted")).end()
+						}
+					})
 				})
 			} else {
 				res.status(401).json(new ApiResponse(401, "Not Authorised to delete"))

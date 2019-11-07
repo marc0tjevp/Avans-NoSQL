@@ -1,7 +1,7 @@
 const ApiResponse = require('../model/response/api.response')
 const auth = require('../config/authentication.config')
 const User = require('../model/schema/user.schema')
-const neo = require('../neodb/neodbhelper')
+const neo = require('../neodb/seraphhelper')
 
 function login(req, res) {
 
@@ -70,8 +70,12 @@ function register(req, res) {
             // Username is not taken yet, insert the new user
             else {
                 user.save().then(
-                    neo.saveUser(res, user.username, function() {
-                        res.status(200).json(new ApiResponse(200, user)).end()
+                    neo.saveNode({username: user.username},"user",function(err,u){
+                        if(err) {
+                            res.status(500).json(new ApiResponse(500,"Error saving to seraph database, please contact the owners, and tell them they fucked up")).end()
+                        } else {
+                            res.status(200).json(new ApiResponse(200, user)).end()
+                        }
                     })
                 )
             }

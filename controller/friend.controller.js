@@ -1,5 +1,5 @@
 const ApiResponse = require('../model/response/api.response')
-const neo = require('../neodb/neodbhelper')
+const neo = require('../neodb/seraphhelper')
 
 function getThreadByDepth(req, res) {
 	res.status(200).json(new ApiResponse(200, "Get friendship by depth Endpoint")).end()
@@ -17,8 +17,12 @@ function getByDepth(req, res) {
 	}
 
 	// Get all friends
-	neo.getFriendships(res, username, depth, (rels) => {
-		res.status(200).json(new ApiResponse(200, rels)).end()
+	getFriendships(username, depth, (err,rels) => {
+		if(err){
+			res.status(500).json(new ApiResponse(500,"Something went wrong, please contact the owners")).end()
+		} else{
+			res.status(200).json(new ApiResponse(200, rels)).end()
+		}
 	})
 
 }
@@ -36,9 +40,13 @@ function addFriend(req, res) {
 
 
 	// Create friendship
-	neo.createFriendship(res, user1, user2, (data) => {
-		res.status(200).json(new ApiResponse(200, data)).end()
-	})
+	neo.saveRel({username:user1},"knows",{username:user2},null,(err,data) => {
+		if(err){
+			res.status(500).json(new ApiResponse(500,"Something went wrong, please contact the owners"))
+		} else{
+			res.status(200).json(new ApiResponse(200, data)).end()
+		}
+	})	
 }
 
 function deleteByUsername(req, res) {
@@ -53,8 +61,12 @@ function deleteByUsername(req, res) {
 	}
 
 	// Delete Friendship
-	neo.deleteFriendship(res, user1, user2, (data) => {
-		res.status(200).json(new ApiResponse(200, data)).end()
+	neo.deleteRel({username: user1},{username:user2},(err,data)=>{
+		if(err){
+			res.status(500).json(new ApiResponse(500,"Something went wrong, please contact the owners"))
+		} else{
+			res.status(200).json(new ApiResponse(200, data)).end()
+		}
 	})
 
 }
@@ -69,12 +81,58 @@ function getAll(req, res) {
 	}
 
 	// Get all friends
-	neo.getFriendships(res, username, 1, (friends) => {
-		res.status(200).json(new ApiResponse(200, friends)).end()
+	getFriendships(username, 1, (err,friends) => {
+		if(err){
+			res.status(500).json(new ApiResponse(500,"Something went wrong, please contact the owners")).end()
+		} else{
+			res.status(200).json(new ApiResponse(200, friends)).end()
+		}
 	})
 
 }
 
+function getFriendships(user,depth,next){
+	depth++
+	neo.getAllRels({username:user},"knows",(err,rels) => {
+		if(err){
+			next(err,null)
+		} else{
+			var friends = []
+			for(i=0;i<depth;i++){
+				friends.forEach((friend)=>{
+					neo.getAllRels(friend,"knows",(err,rels)=>{
+						var itemsleft = rels.length
+						rels.forEach((rel)=>{
+							if(rel){
+								neo.getNode(rel.start,(err,found)=>{
+									neo.getNode(rel.end,(err,found1)=>{
+										var list = []
+										const map = new Map()
+										for (const item of friends){
+											if(!map.has(item.username)){
+												map.set(item.username, true)
+												list.push({
+													username: item.username
+												})
+											}
+										}
+										friends = list
+
+										if(itemsleft==1&&depth-i==0){
+											next(friends)
+											i++
+										}
+									})
+								})
+							}
+						})
+					})
+				})
+			}
+		}
+		
+	})
+}
 module.exports = {
 	getThreadByDepth,
 	getByDepth,
