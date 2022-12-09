@@ -23,7 +23,7 @@
     "boxen": "^2.0.0",
     "chai": "^4.2.0",
     "chai-http": "^4.2.0",
-    "express": "^4.16.4",
+    "express": "^4.17.3",
     "jwt-simple": "^0.5.5",
     "mocha": "^5.2.0",
     "moment": "^2.22.2",
